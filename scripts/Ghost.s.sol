@@ -2,12 +2,12 @@
 pragma solidity ^0.8.0;
 
 import {Script} from 'forge-std/Script.sol';
-import {Ghost} from '../src/contracts/Ghost.sol';
+import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
 
 contract Deploy is Script {
   function run() external {
     vm.startBroadcast();
-    new Ghost();
+    new UpgradeRewardsControllerPayload(address(0));
     vm.stopBroadcast();
   }
 }
