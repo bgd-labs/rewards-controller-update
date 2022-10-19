@@ -11,4 +11,6 @@ interface IInitializableAdminUpgradeabilityProxy {
   function REVISION() external returns (uint256);
 
   function changeAdmin(address newAdmin) external;
+
+  function implementation() external returns (address);
 }
