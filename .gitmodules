@@ -10,7 +10,3 @@
 [submodule "lib/aave-v3-core"]
 	path = lib/aave-v3-core
 	url = https://github.com/aave/aave-v3-core
-[submodule "lib/aave-v3-periphery"]
-	path = lib/aave-v3-periphery
-	url = https://github.com/bgd-labs/aave-v3-periphery
-  branch = feat/3.0.1
