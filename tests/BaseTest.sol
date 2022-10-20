@@ -59,12 +59,26 @@ abstract contract BaseTest is Test {
     address emissionManagerBefore = RewardsController(
       payload.INCENTIVES_CONTROLLER()
     ).getEmissionManager();
+    address implBefore = ProxyHelpers
+      .getInitializableAdminUpgradeabilityProxyImplementation(
+        vm,
+        _incentivesController
+      );
 
     _execute();
 
     address emissionManagerAfter = RewardsController(
       payload.INCENTIVES_CONTROLLER()
     ).getEmissionManager();
+    address implAfter = ProxyHelpers
+      .getInitializableAdminUpgradeabilityProxyImplementation(
+        vm,
+        _incentivesController
+      );
+
+    // implementation should change
+    assertTrue(implBefore != implAfter);
+    // emissionManager should stay the same
     assertEq(emissionManagerBefore, emissionManagerAfter);
   }
 }

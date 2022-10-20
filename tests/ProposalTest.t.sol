@@ -6,6 +6,7 @@ import {AaveV3Polygon, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum, AaveV3Fa
 import {ProxyHelpers} from 'aave-helpers/ProxyHelpers.sol';
 import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
+import {RewardsController} from '../src/contracts/RewardsController.sol';
 import {MockExecutor} from './MockExecutor.sol';
 import {BaseTest} from './BaseTest.sol';
 
@@ -21,13 +22,30 @@ contract ProposalTestPolygon is BaseTest {
 }
 
 contract ProposalTestAvalanche is BaseTest {
+  address constant A_USDC = 0x625E7708f30cA75bfd92586e17077590C60eb4cD;
+
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('avalanche'), 21304418);
+    vm.createSelectFork(vm.rpcUrl('avalanche'), 21309814);
     _setUp(
       AaveV3Avalanche.POOL_ADDRESSES_PROVIDER,
       AaveV3Avalanche.DEFAULT_INCENTIVES_CONTROLLER,
       AaveV3Avalanche.ACL_ADMIN
     );
+  }
+
+  // the test for correctness is in peripery repo, so just cehcking it exists
+  function test_getAssetIndex() public {
+    _execute();
+
+    RewardsController controller = RewardsController(_incentivesController);
+
+    (uint256 indexOld, uint256 indexNew) = controller.getAssetIndex(
+      A_USDC,
+      controller.getRewardsList()[0]
+    );
+    emit log_uint(indexNew);
+    assertGt(indexNew, indexOld);
+    assertGt(indexNew, 228060399236938); // onchain index on block 21309812
   }
 }
 
