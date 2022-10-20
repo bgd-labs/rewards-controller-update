@@ -49,11 +49,10 @@ contract RewardsController is
 
   /**
    * @dev Initialize for RewardsController
+   * @dev Modified version which makes this a noop as otherwise it would be overwritten on the upgrade.
    * @param emissionManager address of the EmissionManager
    **/
-  function initialize(address emissionManager) external initializer {
-    _setEmissionManager(emissionManager);
-  }
+  function initialize(address emissionManager) external initializer {}
 
   /// @inheritdoc IRewardsController
   function getClaimer(address user) external view override returns (address) {

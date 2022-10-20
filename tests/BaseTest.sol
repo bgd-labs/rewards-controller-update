@@ -6,6 +6,7 @@ import {IPoolAddressesProvider} from 'aave-address-book/AaveV3.sol';
 import {ProxyHelpers} from 'aave-helpers/ProxyHelpers.sol';
 import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
+import {RewardsController} from '../src/contracts/RewardsController.sol';
 import {MockExecutor} from './MockExecutor.sol';
 
 abstract contract BaseTest is Test {
@@ -55,6 +56,15 @@ abstract contract BaseTest is Test {
   }
 
   function test_proposalPayloadExecution() public {
+    address emissionManagerBefore = RewardsController(
+      payload.INCENTIVES_CONTROLLER()
+    ).getEmissionManager();
+
     _execute();
+
+    address emissionManagerAfter = RewardsController(
+      payload.INCENTIVES_CONTROLLER()
+    ).getEmissionManager();
+    assertEq(emissionManagerBefore, emissionManagerAfter);
   }
 }
