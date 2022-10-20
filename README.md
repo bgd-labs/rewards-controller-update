@@ -1,25 +1,32 @@
-# BGD forge template
+# Rewards Controller Update <> Aave
 
-Basic template with prettier and rest configuration
+This repository contains the proposal code to upgrade the RewardsController implementation to [3.0.1](https://github.com/aave/aave-v3-periphery/tree/feat/3.0.1). It contains a [generic payload](./src/contracts/UpgradeRewardsControllerPayload.sol) that can be used on all chains and be executed via governance or guardians.
 
-To create a new project using this template run
+## Addresses
 
-```shell
-$ forge init --template bgd-labs/bgd-forge-template my_new_project
-```
+- TBA
 
-## Recommended modules
+## Deployment
 
-[bgd-labs/solidity-utils](https://github.com/bgd-labs/solidity-utils) - common contracts we use everywhere, ie transparent proxy and around
+This repository contains two scripts.
 
-[bgd-labs/aave-address-book](https://github.com/bgd-labs/aave-address-book) - the best and only source about all deployed Aave ecosystem related contracts across all the chains
-
-[bgd-labs/aave-helpers](https://github.com/bgd-labs/aave-helpers) - useful utils for integration, and not only testing related to Aave ecosystem contracts
-
-[Rari-Capital/solmate](https://github.com/Rari-Capital/solmate) - one of the best sources of base contracts for ERC20, ERC21, which will work with transparent proxy pattern out of the box
-
-[OpenZeppelin/openzeppelin-contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) - another very reputable and well organized source of base contracts for tokens, access control and many others
+1. `PayloadDeployment.sol` which contains multiple scripts which allow deploying a payload for a specific network.
+2. `ProposalDeployment.sol` which contains a deploy script that will create the onchainProposals for all the networks controlled via governance(polygon, optimism).
 
 ## Development
 
-This project uses [Foundry](https://getfoundry.sh). See the [book](https://book.getfoundry.sh/getting-started/installation.html) for instructions on how to install and use Foundry.
+This project uses [Foundry](https://getfoundry.sh). See the [book](https://book.getfoundry.sh/getting-started/installation.html) for detailed instructions on how to install and use Foundry.
+The template ships with sensible default so you can use default `foundry` commands without resorting to `MakeFile`.
+
+### Setup
+
+```sh
+cp .env.example .env
+forge install
+```
+
+### Test
+
+```sh
+forge test
+```
