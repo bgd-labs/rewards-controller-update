@@ -65,9 +65,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
     override
     returns (uint256, uint256)
   {
-    RewardsDataTypes.RewardData storage rewardData = _assets[asset].rewards[
-      reward
-    ];
+    RewardsDataTypes.RewardData storage rewardData = _assets[asset].rewards[reward];
     return
       _getAssetIndex(
         rewardData,
@@ -87,12 +85,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
   }
 
   /// @inheritdoc IRewardsDistributor
-  function getRewardsByAsset(address asset)
-    external
-    view
-    override
-    returns (address[] memory)
-  {
+  function getRewardsByAsset(address asset) external view override returns (address[] memory) {
     uint128 rewardsCount = _assets[asset].availableRewardsCount;
     address[] memory availableRewards = new address[](rewardsCount);
 
@@ -125,10 +118,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
   {
     uint256 totalAccrued;
     for (uint256 i = 0; i < _assetsList.length; i++) {
-      totalAccrued += _assets[_assetsList[i]]
-        .rewards[reward]
-        .usersData[user]
-        .accrued;
+      totalAccrued += _assets[_assetsList[i]].rewards[reward].usersData[user].accrued;
     }
 
     return totalAccrued;
@@ -150,8 +140,10 @@ abstract contract RewardsDistributor is IRewardsDistributor {
     override
     returns (address[] memory rewardsList, uint256[] memory unclaimedAmounts)
   {
-    RewardsDataTypes.UserAssetBalance[]
-      memory userAssetBalances = _getUserAssetBalances(assets, user);
+    RewardsDataTypes.UserAssetBalance[] memory userAssetBalances = _getUserAssetBalances(
+      assets,
+      user
+    );
     rewardsList = new address[](_rewardsList.length);
     unclaimedAmounts = new uint256[](rewardsList.length);
 
@@ -167,11 +159,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
         if (userAssetBalances[i].userBalance == 0) {
           continue;
         }
-        unclaimedAmounts[r] += _getPendingRewards(
-          user,
-          rewardsList[r],
-          userAssetBalances[i]
-        );
+        unclaimedAmounts[r] += _getPendingRewards(user, rewardsList[r], userAssetBalances[i]);
       }
     }
     return (rewardsList, unclaimedAmounts);
@@ -206,9 +194,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
     require(rewards.length == newEmissionsPerSecond.length, 'INVALID_INPUT');
     for (uint256 i = 0; i < rewards.length; i++) {
       RewardsDataTypes.AssetData storage assetConfig = _assets[asset];
-      RewardsDataTypes.RewardData storage rewardConfig = _assets[asset].rewards[
-        rewards[i]
-      ];
+      RewardsDataTypes.RewardData storage rewardConfig = _assets[asset].rewards[rewards[i]];
       uint256 decimals = assetConfig.decimals;
       require(
         decimals != 0 && rewardConfig.lastUpdateTimestamp != 0,
@@ -240,21 +226,20 @@ abstract contract RewardsDistributor is IRewardsDistributor {
    * @dev Configure the _assets for a specific emission
    * @param rewardsInput The array of each asset configuration
    **/
-  function _configureAssets(
-    RewardsDataTypes.RewardsConfigInput[] memory rewardsInput
-  ) internal {
+  function _configureAssets(RewardsDataTypes.RewardsConfigInput[] memory rewardsInput) internal {
     for (uint256 i = 0; i < rewardsInput.length; i++) {
       if (_assets[rewardsInput[i].asset].decimals == 0) {
         //never initialized before, adding to the list of assets
         _assetsList.push(rewardsInput[i].asset);
       }
 
-      uint256 decimals = _assets[rewardsInput[i].asset]
-        .decimals = IERC20Detailed(rewardsInput[i].asset).decimals();
-
-      RewardsDataTypes.RewardData storage rewardConfig = _assets[
+      uint256 decimals = _assets[rewardsInput[i].asset].decimals = IERC20Detailed(
         rewardsInput[i].asset
-      ].rewards[rewardsInput[i].reward];
+      ).decimals();
+
+      RewardsDataTypes.RewardData storage rewardConfig = _assets[rewardsInput[i].asset].rewards[
+        rewardsInput[i].reward
+      ];
 
       // Add reward address to asset available rewards if latestUpdateTimestamp is zero
       if (rewardConfig.lastUpdateTimestamp == 0) {
@@ -308,11 +293,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
     uint256 totalSupply,
     uint256 assetUnit
   ) internal returns (uint256, bool) {
-    (uint256 oldIndex, uint256 newIndex) = _getAssetIndex(
-      rewardData,
-      totalSupply,
-      assetUnit
-    );
+    (uint256 oldIndex, uint256 newIndex) = _getAssetIndex(rewardData, totalSupply, assetUnit);
     bool indexUpdated;
     if (newIndex != oldIndex) {
       require(newIndex <= type(uint104).max, 'INDEX_OVERFLOW');
@@ -351,12 +332,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
       // already checked for overflow in _updateRewardData
       rewardData.usersData[user].index = uint104(newAssetIndex);
       if (userBalance != 0) {
-        rewardsAccrued = _getRewards(
-          userBalance,
-          newAssetIndex,
-          userIndex,
-          assetUnit
-        );
+        rewardsAccrued = _getRewards(userBalance, newAssetIndex, userIndex, assetUnit);
 
         rewardData.usersData[user].accrued += rewardsAccrued.toUint128();
       }
@@ -389,9 +365,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
     unchecked {
       for (uint128 r = 0; r < numAvailableRewards; r++) {
         address reward = _assets[asset].availableRewards[r];
-        RewardsDataTypes.RewardData storage rewardData = _assets[asset].rewards[
-          reward
-        ];
+        RewardsDataTypes.RewardData storage rewardData = _assets[asset].rewards[reward];
 
         (uint256 newAssetIndex, bool rewardDataUpdated) = _updateRewardData(
           rewardData,
@@ -408,14 +382,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
         );
 
         if (rewardDataUpdated || userDataUpdated) {
-          emit Accrued(
-            asset,
-            reward,
-            user,
-            newAssetIndex,
-            newAssetIndex,
-            rewardsAccrued
-          );
+          emit Accrued(asset, reward, user, newAssetIndex, newAssetIndex, rewardsAccrued);
         }
       }
     }
@@ -459,10 +426,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
       }
       unclaimedRewards +=
         _getPendingRewards(user, reward, userAssetBalances[i]) +
-        _assets[userAssetBalances[i].asset]
-          .rewards[reward]
-          .usersData[user]
-          .accrued;
+        _assets[userAssetBalances[i].asset].rewards[reward].usersData[user].accrued;
     }
 
     return unclaimedRewards;
@@ -480,15 +444,11 @@ abstract contract RewardsDistributor is IRewardsDistributor {
     address reward,
     RewardsDataTypes.UserAssetBalance memory userAssetBalance
   ) internal view returns (uint256) {
-    RewardsDataTypes.RewardData storage rewardData = _assets[
-      userAssetBalance.asset
-    ].rewards[reward];
+    RewardsDataTypes.RewardData storage rewardData = _assets[userAssetBalance.asset].rewards[
+      reward
+    ];
     uint256 assetUnit = 10**_assets[userAssetBalance.asset].decimals;
-    (, uint256 nextIndex) = _getAssetIndex(
-      rewardData,
-      userAssetBalance.totalSupply,
-      assetUnit
-    );
+    (, uint256 nextIndex) = _getAssetIndex(rewardData, userAssetBalance.totalSupply, assetUnit);
 
     return
       _getRewards(
@@ -579,10 +539,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
   }
 
   /// @inheritdoc IRewardsDistributor
-  function setEmissionManager(address emissionManager)
-    external
-    onlyEmissionManager
-  {
+  function setEmissionManager(address emissionManager) external onlyEmissionManager {
     _setEmissionManager(emissionManager);
   }
 
