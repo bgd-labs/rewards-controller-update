@@ -40,20 +40,14 @@ interface IRewardsController is IRewardsDistributor {
    * @param reward The address of the token reward
    * @param transferStrategy The address of TransferStrategy contract
    */
-  event TransferStrategyInstalled(
-    address indexed reward,
-    address indexed transferStrategy
-  );
+  event TransferStrategyInstalled(address indexed reward, address indexed transferStrategy);
 
   /**
    * @dev Emitted when the reward oracle is updated
    * @param reward The address of the token reward
    * @param rewardOracle The address of oracle
    */
-  event RewardOracleUpdated(
-    address indexed reward,
-    address indexed rewardOracle
-  );
+  event RewardOracleUpdated(address indexed reward, address indexed rewardOracle);
 
   /**
    * @dev Whitelists an address to claim the rewards on behalf of another address
@@ -67,10 +61,7 @@ interface IRewardsController is IRewardsDistributor {
    * @param reward The address of the reward token
    * @param transferStrategy The address of the TransferStrategy logic contract
    */
-  function setTransferStrategy(
-    address reward,
-    ITransferStrategyBase transferStrategy
-  ) external;
+  function setTransferStrategy(address reward, ITransferStrategyBase transferStrategy) external;
 
   /**
    * @dev Sets an Aave Oracle contract to enforce rewards with a source of value.
@@ -81,8 +72,7 @@ interface IRewardsController is IRewardsDistributor {
    * @param reward The address of the reward to set the price aggregator
    * @param rewardOracle The address of price aggregator that follows IEACAggregatorProxy interface
    */
-  function setRewardOracle(address reward, IEACAggregatorProxy rewardOracle)
-    external;
+  function setRewardOracle(address reward, IEACAggregatorProxy rewardOracle) external;
 
   /**
    * @dev Get the price aggregator oracle address
@@ -117,8 +107,7 @@ interface IRewardsController is IRewardsDistributor {
    *   IEACAggregatorProxy rewardOracle: The Price Oracle of a reward to visualize the incentives at the UI Frontend.
    *                                     Must follow Chainlink Aggregator IEACAggregatorProxy interface to be compatible.
    */
-  function configureAssets(RewardsDataTypes.RewardsConfigInput[] memory config)
-    external;
+  function configureAssets(RewardsDataTypes.RewardsConfigInput[] memory config) external;
 
   /**
    * @dev Called by the corresponding asset on any update that affects the rewards distribution
@@ -202,9 +191,7 @@ interface IRewardsController is IRewardsDistributor {
     address[] calldata assets,
     address user,
     address to
-  )
-    external
-    returns (address[] memory rewardsList, uint256[] memory claimedAmounts);
+  ) external returns (address[] memory rewardsList, uint256[] memory claimedAmounts);
 
   /**
    * @dev Claims all reward for msg.sender, on all the assets of the pool, accumulating the pending rewards

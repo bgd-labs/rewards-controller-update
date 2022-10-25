@@ -15,11 +15,7 @@ import {IEACAggregatorProxy} from '../interfaces/IEACAggregatorProxy.sol';
  * @notice Abstract contract template to build Distributors contracts for ERC20 rewards to protocol participants
  * @author Aave
  **/
-contract RewardsController is
-  RewardsDistributor,
-  VersionedInitializable,
-  IRewardsController
-{
+contract RewardsController is RewardsDistributor, VersionedInitializable, IRewardsController {
   using SafeCast for uint256;
 
   uint256 public constant REVISION = 2;
@@ -68,22 +64,12 @@ contract RewardsController is
   }
 
   /// @inheritdoc IRewardsController
-  function getRewardOracle(address reward)
-    external
-    view
-    override
-    returns (address)
-  {
+  function getRewardOracle(address reward) external view override returns (address) {
     return address(_rewardOracle[reward]);
   }
 
   /// @inheritdoc IRewardsController
-  function getTransferStrategy(address reward)
-    external
-    view
-    override
-    returns (address)
-  {
+  function getTransferStrategy(address reward) external view override returns (address) {
     return address(_transferStrategy[reward]);
   }
 
@@ -95,8 +81,7 @@ contract RewardsController is
   {
     for (uint256 i = 0; i < config.length; i++) {
       // Get the current Scaled Total Supply of AToken or Debt token
-      config[i].totalSupply = IScaledBalanceToken(config[i].asset)
-        .scaledTotalSupply();
+      config[i].totalSupply = IScaledBalanceToken(config[i].asset).scaledTotalSupply();
 
       // Install TransferStrategy logic at IncentivesController
       _installTransferStrategy(config[i].reward, config[i].transferStrategy);
@@ -108,10 +93,10 @@ contract RewardsController is
   }
 
   /// @inheritdoc IRewardsController
-  function setTransferStrategy(
-    address reward,
-    ITransferStrategyBase transferStrategy
-  ) external onlyEmissionManager {
+  function setTransferStrategy(address reward, ITransferStrategyBase transferStrategy)
+    external
+    onlyEmissionManager
+  {
     _installTransferStrategy(reward, transferStrategy);
   }
 
@@ -150,12 +135,7 @@ contract RewardsController is
     address user,
     address to,
     address reward
-  )
-    external
-    override
-    onlyAuthorizedClaimers(msg.sender, user)
-    returns (uint256)
-  {
+  ) external override onlyAuthorizedClaimers(msg.sender, user) returns (uint256) {
     require(user != address(0), 'INVALID_USER_ADDRESS');
     require(to != address(0), 'INVALID_TO_ADDRESS');
     return _claimRewards(assets, amount, msg.sender, user, to, reward);
@@ -167,8 +147,7 @@ contract RewardsController is
     uint256 amount,
     address reward
   ) external override returns (uint256) {
-    return
-      _claimRewards(assets, amount, msg.sender, msg.sender, msg.sender, reward);
+    return _claimRewards(assets, amount, msg.sender, msg.sender, msg.sender, reward);
   }
 
   /// @inheritdoc IRewardsController
@@ -207,11 +186,7 @@ contract RewardsController is
   }
 
   /// @inheritdoc IRewardsController
-  function setClaimer(address user, address caller)
-    external
-    override
-    onlyEmissionManager
-  {
+  function setClaimer(address user, address caller) external override onlyEmissionManager {
     _authorizedClaimers[user] = caller;
     emit ClaimerSet(user, caller);
   }
@@ -231,10 +206,9 @@ contract RewardsController is
     userAssetBalances = new RewardsDataTypes.UserAssetBalance[](assets.length);
     for (uint256 i = 0; i < assets.length; i++) {
       userAssetBalances[i].asset = assets[i];
-      (
-        userAssetBalances[i].userBalance,
-        userAssetBalances[i].totalSupply
-      ) = IScaledBalanceToken(assets[i]).getScaledUserBalanceAndSupply(user);
+      (userAssetBalances[i].userBalance, userAssetBalances[i].totalSupply) = IScaledBalanceToken(
+        assets[i]
+      ).getScaledUserBalanceAndSupply(user);
     }
     return userAssetBalances;
   }
@@ -272,8 +246,7 @@ contract RewardsController is
       } else {
         uint256 difference = totalRewards - amount;
         totalRewards -= difference;
-        _assets[asset].rewards[reward].usersData[user].accrued = difference
-          .toUint128();
+        _assets[asset].rewards[reward].usersData[user].accrued = difference.toUint128();
         break;
       }
     }
@@ -303,10 +276,7 @@ contract RewardsController is
     address claimer,
     address user,
     address to
-  )
-    internal
-    returns (address[] memory rewardsList, uint256[] memory claimedAmounts)
-  {
+  ) internal returns (address[] memory rewardsList, uint256[] memory claimedAmounts) {
     uint256 rewardsListLength = _rewardsList.length;
     rewardsList = new address[](rewardsListLength);
     claimedAmounts = new uint256[](rewardsListLength);
@@ -319,10 +289,7 @@ contract RewardsController is
         if (rewardsList[j] == address(0)) {
           rewardsList[j] = _rewardsList[j];
         }
-        uint256 rewardAmount = _assets[asset]
-          .rewards[rewardsList[j]]
-          .usersData[user]
-          .accrued;
+        uint256 rewardAmount = _assets[asset].rewards[rewardsList[j]].usersData[user].accrued;
         if (rewardAmount != 0) {
           claimedAmounts[j] += rewardAmount;
           _assets[asset].rewards[rewardsList[j]].usersData[user].accrued = 0;
@@ -377,18 +344,11 @@ contract RewardsController is
    * @param reward The address of the reward token
    * @param transferStrategy The address of the reward TransferStrategy
    */
-  function _installTransferStrategy(
-    address reward,
-    ITransferStrategyBase transferStrategy
-  ) internal {
-    require(
-      address(transferStrategy) != address(0),
-      'STRATEGY_CAN_NOT_BE_ZERO'
-    );
-    require(
-      _isContract(address(transferStrategy)) == true,
-      'STRATEGY_MUST_BE_CONTRACT'
-    );
+  function _installTransferStrategy(address reward, ITransferStrategyBase transferStrategy)
+    internal
+  {
+    require(address(transferStrategy) != address(0), 'STRATEGY_CAN_NOT_BE_ZERO');
+    require(_isContract(address(transferStrategy)) == true, 'STRATEGY_MUST_BE_CONTRACT');
 
     _transferStrategy[reward] = transferStrategy;
 
@@ -402,9 +362,7 @@ contract RewardsController is
    * @param rewardOracle The address of the price oracle
    */
 
-  function _setRewardOracle(address reward, IEACAggregatorProxy rewardOracle)
-    internal
-  {
+  function _setRewardOracle(address reward, IEACAggregatorProxy rewardOracle) internal {
     require(rewardOracle.latestAnswer() > 0, 'ORACLE_MUST_RETURN_PRICE');
     _rewardOracle[reward] = rewardOracle;
     emit RewardOracleUpdated(reward, address(rewardOracle));

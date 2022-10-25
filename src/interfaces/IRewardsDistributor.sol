@@ -126,13 +126,7 @@ interface IRewardsDistributor {
    * @return The old index of the asset distribution
    * @return The new index of the asset distribution
    **/
-  function getAssetIndex(address asset, address reward)
-    external
-    view
-    returns(
-      uint256,
-      uint256
-    );
+  function getAssetIndex(address asset, address reward) external view returns (uint256, uint256);
 
   /**
    * @dev Returns the list of available reward token addresses of an incentivized asset

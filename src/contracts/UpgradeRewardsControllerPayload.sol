@@ -15,20 +15,14 @@ contract UpgradeRewardsControllerPayload is IProposalGenericExecutor {
   IPoolAddressesProvider public immutable POOL_ADDRESS_PROVIDER;
   address public immutable INCENTIVES_CONTROLLER;
 
-  constructor(
-    IPoolAddressesProvider poolAddressesProvider,
-    address incentivesController
-  ) {
+  constructor(IPoolAddressesProvider poolAddressesProvider, address incentivesController) {
     INCENTIVES_CONTROLLER = incentivesController;
     POOL_ADDRESS_PROVIDER = poolAddressesProvider;
   }
 
   function execute() external {
-    address emissionManager = RewardsController(INCENTIVES_CONTROLLER)
-      .getEmissionManager();
-    RewardsController rewardsControllerImpl = new RewardsController(
-      emissionManager
-    );
+    address emissionManager = RewardsController(INCENTIVES_CONTROLLER).getEmissionManager();
+    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
     POOL_ADDRESS_PROVIDER.setAddressAsProxy(
       INCENTIVES_CONTROLLER_ADDRESS_ID,
       address(rewardsControllerImpl)
