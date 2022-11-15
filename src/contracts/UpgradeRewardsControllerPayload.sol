@@ -23,6 +23,7 @@ contract UpgradeRewardsControllerPayload is IProposalGenericExecutor {
   function execute() external {
     address emissionManager = RewardsController(INCENTIVES_CONTROLLER).getEmissionManager();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    rewardsControllerImpl.initialize(emissionManager);
     POOL_ADDRESS_PROVIDER.setAddressAsProxy(
       INCENTIVES_CONTROLLER_ADDRESS_ID,
       address(rewardsControllerImpl)
