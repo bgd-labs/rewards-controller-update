@@ -41,8 +41,6 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
     _;
   }
 
-  constructor(address emissionManager) RewardsDistributor(emissionManager) {}
-
   /**
    * @dev Initialize for RewardsController
    * @dev Modified version which makes this a noop as otherwise it would be overwritten on the upgrade.
