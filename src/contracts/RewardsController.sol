@@ -43,7 +43,8 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
 
   /**
    * @dev Initialize for RewardsController
-   * @dev Modified version which makes this a noop as otherwise it would be overwritten on the upgrade.
+   * @dev Modified version which makes this a noop as otherwise
+   * https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/configuration/PoolAddressesProvider.sol#L171 would set the emissionManager to the pooladdressprovider on the upgrade
    * @param emissionManager address of the EmissionManager
    **/
   function initialize(address emissionManager) external initializer {}
