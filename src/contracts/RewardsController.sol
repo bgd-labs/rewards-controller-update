@@ -4,11 +4,11 @@ pragma solidity ^0.8.10;
 import {VersionedInitializable} from '@aave/core-v3/contracts/protocol/libraries/aave-upgradeability/VersionedInitializable.sol';
 import {SafeCast} from '@aave/core-v3/contracts/dependencies/openzeppelin/contracts/SafeCast.sol';
 import {IScaledBalanceToken} from '@aave/core-v3/contracts/interfaces/IScaledBalanceToken.sol';
-import {RewardsDistributor} from './RewardsDistributor.sol';
-import {IRewardsController} from '../interfaces/IRewardsController.sol';
-import {ITransferStrategyBase} from '../interfaces/ITransferStrategyBase.sol';
-import {RewardsDataTypes} from '../libraries/RewardsDataTypes.sol';
-import {IEACAggregatorProxy} from '../interfaces/IEACAggregatorProxy.sol';
+import {RewardsDistributor} from '@aave/periphery-v3/contracts/rewards/RewardsDistributor.sol';
+import {RewardsDataTypes} from '@aave/periphery-v3/contracts/rewards/libraries/RewardsDataTypes.sol';
+import {IRewardsController} from '@aave/periphery-v3/contracts/rewards/interfaces/IRewardsController.sol';
+import {ITransferStrategyBase} from '@aave/periphery-v3/contracts/rewards/interfaces/ITransferStrategyBase.sol';
+import {IEACAggregatorProxy} from '@aave/periphery-v3/contracts/misc/interfaces/IEACAggregatorProxy.sol';
 
 /**
  * @title RewardsController
@@ -44,7 +44,8 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
   /**
    * @dev Initialize for RewardsController
    * @dev Modified version which makes this a noop as otherwise
-   * https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/configuration/PoolAddressesProvider.sol#L171 would set the emissionManager to the pooladdressprovider on the upgrade
+   * https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/configuration/PoolAddressesProvider.sol#L171
+   * would set the emissionManager to the pooladdressesprovider on the upgrade
    * @param emissionManager address of the EmissionManager
    **/
   function initialize(address emissionManager) external initializer {}
