@@ -2,6 +2,17 @@
 
 This repository contains the proposal code to upgrade the RewardsController implementation to [3.0.1](https://github.com/aave/aave-v3-periphery/tree/feat/3.0.1). It contains a [generic payload](./src/contracts/UpgradeRewardsControllerPayload.sol) that can be used on all chains and be executed via governance or guardians.
 
+The upgrade includes the following changes:
+
+1. soften solidity versions to `^0.8.0` https://github.com/aave/aave-v3-periphery/pull/102
+2. adding a getter to fetch the current index https://github.com/aave/aave-v3-periphery/pull/101
+3. replacing totalSupply with totalScaledSupply on `setEmissionPerSecond` https://github.com/aave/aave-v3-periphery/pull/104
+4. pumping revision from `1` to `2` https://github.com/aave/aave-v3-periphery/pull/107
+5. fixing `getUserReward` to return correct rewards for users with 0 balance https://github.com/aave/aave-v3-periphery/pull/112
+6. remove unnecessary `constructor` that sets state on a contract always used behind a proxy https://github.com/aave/aave-v3-periphery/pull/118
+7. consistently uppercase license pragma `agpl`->`AGPL` https://github.com/aave/aave-v3-periphery/pull/120
+8. improving documentation on various structs https://github.com/aave/aave-v3-periphery/pull/121
+
 ## Addresses
 
 - TBA
