@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Test} from 'forge-std/Test.sol';
-import {AaveV3Polygon, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum, AaveV3Fantom, AaveV3Harmony} from 'aave-address-book/AaveAddressBook.sol';
+import {AaveV3Polygon, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum, AaveV3Fantom, AaveV3Harmony, AaveGovernanceV2} from 'aave-address-book/AaveAddressBook.sol';
 import {ProxyHelpers} from 'aave-helpers/ProxyHelpers.sol';
 import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
@@ -16,7 +16,7 @@ contract ProposalTestPolygon is BaseTest {
     _setUp(
       AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
       AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER,
-      AaveV3Polygon.ACL_ADMIN
+      AaveGovernanceV2.POLYGON_BRIDGE_EXECUTOR
     );
   }
 }
@@ -55,7 +55,7 @@ contract ProposalTestOptimism is BaseTest {
     _setUp(
       AaveV3Optimism.POOL_ADDRESSES_PROVIDER,
       AaveV3Optimism.DEFAULT_INCENTIVES_CONTROLLER,
-      AaveV3Optimism.ACL_ADMIN
+      AaveGovernanceV2.OPTIMISM_BRIDGE_EXECUTOR
     );
   }
 }
@@ -66,7 +66,7 @@ contract ProposalTestArbitrum is BaseTest {
     _setUp(
       AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER,
       AaveV3Arbitrum.DEFAULT_INCENTIVES_CONTROLLER,
-      AaveV3Arbitrum.ACL_ADMIN
+      AaveGovernanceV2.ARBITRUM_BRIDGE_EXECUTOR
     );
   }
 }
