@@ -1,6 +1,6 @@
 ```diff
 diff --git a/./src/etherscan/fantom_0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789/Flattened.sol b/./src/Flattened.sol
-index 8f2b1a5..2842668 100644
+index 8f2b1a5..838877f 100644
 --- a/./src/etherscan/fantom_0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789/Flattened.sol
 +++ b/./src/Flattened.sol
 @@ -1,5 +1,5 @@
@@ -10,7 +10,24 @@ index 8f2b1a5..2842668 100644
  
  /**
   * @title VersionedInitializable
-@@ -603,6 +603,21 @@ interface IRewardsDistributor {
+@@ -529,16 +529,6 @@ interface IRewardsDistributor {
+     uint256 rewardsAccrued
+   );
+ 
+-  /**
+-   * @dev Emitted when the emission manager address is updated.
+-   * @param oldEmissionManager The address of the old emission manager
+-   * @param newEmissionManager The address of the new emission manager
+-   */
+-  event EmissionManagerUpdated(
+-    address indexed oldEmissionManager,
+-    address indexed newEmissionManager
+-  );
+-
+   /**
+    * @dev Sets the end date for the distribution
+    * @param asset The asset to incentivize
+@@ -603,6 +593,15 @@ interface IRewardsDistributor {
        uint256
      );
  
@@ -21,18 +38,33 @@ index 8f2b1a5..2842668 100644
 +   * @return The old index of the asset distribution
 +   * @return The new index of the asset distribution
 +   **/
-+  function getAssetIndex(address asset, address reward)
-+    external
-+    view
-+    returns(
-+      uint256,
-+      uint256
-+    );
++  function getAssetIndex(address asset, address reward) external view returns (uint256, uint256);
 +
    /**
     * @dev Returns the list of available reward token addresses of an incentivized asset
     * @param asset The incentivized asset
-@@ -748,22 +763,33 @@ library RewardsDataTypes {
+@@ -660,13 +659,14 @@ interface IRewardsDistributor {
+    * @dev Returns the address of the emission manager
+    * @return The address of the EmissionManager
+    */
++  function EMISSION_MANAGER() external view returns (address);
++
++  /**
++   * @dev Returns the address of the emission manager.
++   * Deprecated: This getter is maintained for compatibility purposes. Use the `EMISSION_MANAGER()` function instead.
++   * @return The address of the EmissionManager
++   */
+   function getEmissionManager() external view returns (address);
+-
+-  /**
+-   * @dev Updates the address of the emission manager
+-   * @param emissionManager The address of the new EmissionManager
+-   */
+-  function setEmissionManager(address emissionManager) external;
+ }
+ 
+ interface ITransferStrategyBase {
+@@ -748,22 +748,33 @@ library RewardsDataTypes {
    }
  
    struct UserData {
@@ -67,12 +99,15 @@ index 8f2b1a5..2842668 100644
      uint8 decimals;
    }
  }
-@@ -775,19 +801,19 @@ library RewardsDataTypes {
+@@ -775,28 +786,31 @@ library RewardsDataTypes {
   **/
  abstract contract RewardsDistributor is IRewardsDistributor {
    using SafeCast for uint256;
 -  // manager of incentives
++
 +  // Manager of incentives
++  address public immutable EMISSION_MANAGER;
++  // Deprecated: This storage slot is kept for backwards compatibility purposes.
    address internal _emissionManager;
  
 -  // asset => AssetData
@@ -92,18 +127,18 @@ index 8f2b1a5..2842668 100644
    address[] internal _assetsList;
  
    modifier onlyEmissionManager() {
-@@ -795,10 +821,6 @@ abstract contract RewardsDistributor is IRewardsDistributor {
+-    require(msg.sender == _emissionManager, 'ONLY_EMISSION_MANAGER');
++    require(msg.sender == EMISSION_MANAGER, 'ONLY_EMISSION_MANAGER');
      _;
    }
  
--  constructor(address emissionManager) {
+   constructor(address emissionManager) {
 -    _setEmissionManager(emissionManager);
--  }
--
++    EMISSION_MANAGER = emissionManager;
+   }
+ 
    /// @inheritdoc IRewardsDistributor
-   function getRewardsData(address asset, address reward)
-     public
-@@ -819,6 +841,22 @@ abstract contract RewardsDistributor is IRewardsDistributor {
+@@ -819,6 +833,22 @@ abstract contract RewardsDistributor is IRewardsDistributor {
      );
    }
  
@@ -126,7 +161,7 @@ index 8f2b1a5..2842668 100644
    /// @inheritdoc IRewardsDistributor
    function getDistributionEnd(address asset, address reward)
      external
-@@ -948,7 +986,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
+@@ -948,7 +978,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
  
        (uint256 newIndex, ) = _updateRewardData(
          rewardConfig,
@@ -135,7 +170,7 @@ index 8f2b1a5..2842668 100644
          10**decimals
        );
  
-@@ -1167,11 +1205,15 @@ abstract contract RewardsDistributor is IRewardsDistributor {
+@@ -1167,11 +1197,15 @@ abstract contract RewardsDistributor is IRewardsDistributor {
      // Add unrealized rewards
      for (uint256 i = 0; i < userAssetBalances.length; i++) {
        if (userAssetBalances[i].userBalance == 0) {
@@ -155,7 +190,7 @@ index 8f2b1a5..2842668 100644
      }
  
      return unclaimedRewards;
-@@ -1227,6 +1269,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
+@@ -1227,6 +1261,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
  
    /**
     * @dev Calculates the next value of an specific distribution index, with validations
@@ -163,7 +198,31 @@ index 8f2b1a5..2842668 100644
     * @param totalSupply of the asset being rewarded
     * @param assetUnit One unit of asset (10**decimals)
     * @return The new index.
-@@ -1403,10 +1446,10 @@ interface IRewardsController is IRewardsDistributor {
+@@ -1280,22 +1315,7 @@ abstract contract RewardsDistributor is IRewardsDistributor {
+ 
+   /// @inheritdoc IRewardsDistributor
+   function getEmissionManager() external view returns (address) {
+-    return _emissionManager;
+-  }
+-
+-  /// @inheritdoc IRewardsDistributor
+-  function setEmissionManager(address emissionManager) external onlyEmissionManager {
+-    _setEmissionManager(emissionManager);
+-  }
+-
+-  /**
+-   * @dev Updates the address of the emission manager
+-   * @param emissionManager The address of the new EmissionManager
+-   */
+-  function _setEmissionManager(address emissionManager) internal {
+-    address previousEmissionManager = _emissionManager;
+-    _emissionManager = emissionManager;
+-    emit EmissionManagerUpdated(previousEmissionManager, emissionManager);
++    return EMISSION_MANAGER;
+   }
+ }
+ 
+@@ -1403,10 +1423,10 @@ interface IRewardsController is IRewardsDistributor {
    function configureAssets(RewardsDataTypes.RewardsConfigInput[] memory config) external;
  
    /**
@@ -178,7 +237,7 @@ index 8f2b1a5..2842668 100644
     **/
    function handleAction(
      address user,
-@@ -1505,7 +1548,7 @@ interface IRewardsController is IRewardsDistributor {
+@@ -1505,7 +1525,7 @@ interface IRewardsController is IRewardsDistributor {
  contract RewardsController is RewardsDistributor, VersionedInitializable, IRewardsController {
    using SafeCast for uint256;
  
@@ -187,23 +246,17 @@ index 8f2b1a5..2842668 100644
  
    // This mapping allows whitelisted addresses to claim on behalf of others
    // useful for contracts that hold tokens to be rewarded but don't have any native logic to claim Liquidity Mining rewards
-@@ -1528,15 +1571,14 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
-     _;
-   }
+@@ -1532,11 +1552,9 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
  
--  constructor(address emissionManager) RewardsDistributor(emissionManager) {}
--
    /**
     * @dev Initialize for RewardsController
-+   * @dev Modified version which makes this a noop as otherwise
-+   * https://github.com/aave/aave-v3-core/blob/master/contracts/protocol/configuration/PoolAddressesProvider.sol#L171
-+   * would set the emissionManager to the pooladdressesprovider on the upgrade
-    * @param emissionManager address of the EmissionManager
+-   * @param emissionManager address of the EmissionManager
++   * @dev It expects an address as argument since its initialized via PoolAddressesProvider._updateImpl()
     **/
 -  function initialize(address emissionManager) external initializer {
 -    _setEmissionManager(emissionManager);
 -  }
-+  function initialize(address emissionManager) external initializer {}
++  function initialize(address) external initializer {}
  
    /// @inheritdoc IRewardsController
    function getClaimer(address user) external view override returns (address) {

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IPoolAddressesProvider} from 'aave-address-book/AaveV3.sol';
-import {RewardsController} from './RewardsController.sol';
+import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsController.sol';
 import {IProposalGenericExecutor} from '../interfaces/IProposalGenericExecutor.sol';
 import {IInitializableAdminUpgradeabilityProxy} from '../interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 
@@ -22,7 +22,7 @@ contract UpgradeRewardsControllerPayload is IProposalGenericExecutor {
 
   function execute() external {
     address emissionManager = RewardsController(INCENTIVES_CONTROLLER).getEmissionManager();
-    RewardsController rewardsControllerImpl = new RewardsController();
+    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
     rewardsControllerImpl.initialize(emissionManager);
     POOL_ADDRESS_PROVIDER.setAddressAsProxy(
       INCENTIVES_CONTROLLER_ADDRESS_ID,

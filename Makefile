@@ -29,12 +29,12 @@ deploy-proposal :;  forge script script/ProposalDeployment.s.sol:ProposalDeploym
 
 diff:
 	@echo "downloading source from etherscan"
-	@make download chain=${chain} address=${address}
+# @make download chain=${chain} address=${address}
 	forge flatten ./src/etherscan/${chain}_${address}/RewardsController/@aave/periphery-v3/contracts/rewards/RewardsController.sol --output ./src/etherscan/${chain}_${address}/Flattened.sol
 	@make git-diff before='./src/etherscan/${chain}_${address}/Flattened.sol' after='./src/Flattened.sol' out=${chain}_${address}
 
 diff-all:
-	forge flatten ./src/contracts/RewardsController.sol --output ./src/Flattened.sol
+	forge flatten ./lib/aave-v3-periphery/contracts/rewards/RewardsController.sol  --output ./src/Flattened.sol
 	@make diff chain=optimism address=0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789
 	@make diff chain=avalanche address=0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789
 	@make diff chain=polygon address=0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789
