@@ -4,9 +4,9 @@ pragma solidity ^0.8.0;
 import {Test} from 'forge-std/Test.sol';
 import {AaveV3Polygon, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum, AaveV3Fantom, AaveV3Harmony, AaveGovernanceV2} from 'aave-address-book/AaveAddressBook.sol';
 import {ProxyHelpers} from 'aave-helpers/ProxyHelpers.sol';
+import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsController.sol';
 import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
-import {RewardsController} from '../src/contracts/RewardsController.sol';
 import {MockExecutor} from './MockExecutor.sol';
 import {BaseTest} from './BaseTest.sol';
 
@@ -51,7 +51,7 @@ contract ProposalTestAvalanche is BaseTest {
 
 contract ProposalTestOptimism is BaseTest {
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('optimism'), 30397201);
+    vm.createSelectFork(vm.rpcUrl('optimism'), 43267312);
     _setUp(
       AaveV3Optimism.POOL_ADDRESSES_PROVIDER,
       AaveV3Optimism.DEFAULT_INCENTIVES_CONTROLLER,
@@ -62,7 +62,7 @@ contract ProposalTestOptimism is BaseTest {
 
 contract ProposalTestArbitrum is BaseTest {
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('arbitrum'), 31262890);
+    vm.createSelectFork(vm.rpcUrl('arbitrum'), 41929141);
     _setUp(
       AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER,
       AaveV3Arbitrum.DEFAULT_INCENTIVES_CONTROLLER,
@@ -73,7 +73,7 @@ contract ProposalTestArbitrum is BaseTest {
 
 contract ProposalTestFantom is BaseTest {
   function setUp() public {
-    vm.createSelectFork(vm.rpcUrl('fantom'), 49609704);
+    vm.createSelectFork(vm.rpcUrl('fantom'), 51560600);
     _setUp(
       AaveV3Fantom.POOL_ADDRESSES_PROVIDER,
       AaveV3Fantom.DEFAULT_INCENTIVES_CONTROLLER,
