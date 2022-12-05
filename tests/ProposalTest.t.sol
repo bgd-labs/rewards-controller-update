@@ -8,8 +8,11 @@ import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsCon
 import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
 import {MockExecutor} from './MockExecutor.sol';
-import {BaseTest} from './BaseTest.sol';
+import {BaseTest, BaseTestGuardian} from './BaseTest.sol';
 
+/**
+ * Testing payload
+ */
 contract ProposalTestPolygon is BaseTest {
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('polygon'), 34550201);
@@ -21,7 +24,7 @@ contract ProposalTestPolygon is BaseTest {
   }
 }
 
-contract ProposalTestAvalanche is BaseTest {
+contract ProposalTestAvalanche is BaseTestGuardian {
   address constant A_USDC = 0x625E7708f30cA75bfd92586e17077590C60eb4cD;
 
   function setUp() public {
@@ -49,29 +52,29 @@ contract ProposalTestAvalanche is BaseTest {
   }
 }
 
-contract ProposalTestOptimism is BaseTest {
+contract ProposalTestOptimism is BaseTestGuardian {
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('optimism'), 43267312);
     _setUp(
       AaveV3Optimism.POOL_ADDRESSES_PROVIDER,
       AaveV3Optimism.DEFAULT_INCENTIVES_CONTROLLER,
-      AaveGovernanceV2.OPTIMISM_BRIDGE_EXECUTOR
+      AaveV3Optimism.ACL_ADMIN
     );
   }
 }
 
-contract ProposalTestArbitrum is BaseTest {
+contract ProposalTestArbitrum is BaseTestGuardian {
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('arbitrum'), 41929141);
     _setUp(
       AaveV3Arbitrum.POOL_ADDRESSES_PROVIDER,
       AaveV3Arbitrum.DEFAULT_INCENTIVES_CONTROLLER,
-      AaveGovernanceV2.ARBITRUM_BRIDGE_EXECUTOR
+      AaveV3Arbitrum.ACL_ADMIN
     );
   }
 }
 
-contract ProposalTestFantom is BaseTest {
+contract ProposalTestFantom is BaseTestGuardian {
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('fantom'), 51560600);
     _setUp(
@@ -82,7 +85,7 @@ contract ProposalTestFantom is BaseTest {
   }
 }
 
-contract ProposalTestHarmony is BaseTest {
+contract ProposalTestHarmony is BaseTestGuardian {
   function setUp() public {
     vm.createSelectFork(vm.rpcUrl('harmony'), 32871646);
     _setUp(

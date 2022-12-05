@@ -48,8 +48,7 @@ abstract contract BaseTest is Test {
   }
 
   function test_proposalPayloadExecution() public {
-    address emissionManagerBefore = RewardsController(payload.INCENTIVES_CONTROLLER())
-      .getEmissionManager();
+    address emissionManagerBefore = RewardsController(_incentivesController).getEmissionManager();
     address implBefore = ProxyHelpers.getInitializableAdminUpgradeabilityProxyImplementation(
       vm,
       _incentivesController
@@ -57,8 +56,75 @@ abstract contract BaseTest is Test {
 
     _execute();
 
-    address emissionManagerAfter = RewardsController(payload.INCENTIVES_CONTROLLER())
-      .getEmissionManager();
+    address emissionManagerAfter = RewardsController(_incentivesController).getEmissionManager();
+    address implAfter = ProxyHelpers.getInitializableAdminUpgradeabilityProxyImplementation(
+      vm,
+      _incentivesController
+    );
+
+    // implementation should change
+    assertTrue(implBefore != implAfter, 'IMPL_UPDATE');
+    // emissionManager should stay the same
+    assertEq(emissionManagerBefore, emissionManagerAfter, 'EMISSION_MANAGER_UPDATE');
+  }
+}
+
+abstract contract BaseTestGuardian is Test {
+  RewardsController public rewardsController;
+  address internal _aclAdmin;
+  IPoolAddressesProvider internal _poolAddressProvider;
+  address internal _incentivesController;
+
+  bytes32 public constant INCENTIVES_CONTROLLER_ADDRESS_ID =
+    0x703c2c8634bed68d98c029c18f310e7f7ec0e5d6342c590190b3cb8b3ba54532; // keccak256("INCENTIVES_CONTROLLER")
+
+  function _setUp(
+    IPoolAddressesProvider poolAddressProvider,
+    address incentivesController,
+    address aclAdmin
+  ) internal {
+    address emissionManager = RewardsController(incentivesController).getEmissionManager();
+    rewardsController = new RewardsController(emissionManager);
+    rewardsController.initialize(emissionManager);
+
+    _poolAddressProvider = poolAddressProvider;
+    _incentivesController = incentivesController;
+    _aclAdmin = aclAdmin;
+  }
+
+  function _execute() internal {
+    vm.startPrank(_aclAdmin);
+    _poolAddressProvider.setAddressAsProxy(
+      INCENTIVES_CONTROLLER_ADDRESS_ID,
+      address(rewardsController)
+    );
+    vm.stopPrank();
+  }
+
+  function test_adminIsPoolAddressesProvider() public {
+    assertEq(
+      ProxyHelpers.getInitializableAdminUpgradeabilityProxyAdmin(vm, _incentivesController),
+      address(_poolAddressProvider)
+    );
+  }
+
+  function test_setAddressIsProperlySet() public {
+    assertEq(
+      _poolAddressProvider.getAddress(INCENTIVES_CONTROLLER_ADDRESS_ID),
+      _incentivesController
+    );
+  }
+
+  function test_proposalPayloadExecution() public {
+    address emissionManagerBefore = RewardsController(_incentivesController).getEmissionManager();
+    address implBefore = ProxyHelpers.getInitializableAdminUpgradeabilityProxyImplementation(
+      vm,
+      _incentivesController
+    );
+
+    _execute();
+
+    address emissionManagerAfter = RewardsController(_incentivesController).getEmissionManager();
     address implAfter = ProxyHelpers.getInitializableAdminUpgradeabilityProxyImplementation(
       vm,
       _incentivesController
