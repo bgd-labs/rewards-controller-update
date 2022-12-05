@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {AaveV3Polygon, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum, AaveV3Fantom, AaveV3Harmony} from 'aave-address-book/AaveAddressBook.sol';
+import {AaveV3Polygon, AaveV3Goerli, AaveV3Avalanche, AaveV3Optimism, AaveV3Arbitrum, AaveV3Fantom, AaveV3Harmony} from 'aave-address-book/AaveAddressBook.sol';
 import {Test} from 'forge-std/Test.sol';
 import {Script} from 'forge-std/Script.sol';
 import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsController.sol';
@@ -15,6 +15,19 @@ contract DeployPolygon is Script {
       AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
       AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER
     );
+    vm.stopBroadcast();
+  }
+}
+
+// test
+contract DeployGoerli is Script {
+  function run() external {
+    address emissionManager = RewardsController(AaveV3Goerli.DEFAULT_INCENTIVES_CONTROLLER)
+      .getEmissionManager();
+
+    vm.startBroadcast();
+    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    rewardsControllerImpl.initialize(emissionManager);
     vm.stopBroadcast();
   }
 }

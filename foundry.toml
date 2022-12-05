@@ -15,9 +15,11 @@ polygon = "${RPC_POLYGON}"
 arbitrum = "${RPC_ARBITRUM}"
 fantom = "${RPC_FANTOM}"
 harmony = "${RPC_HARMONY}"
+goerli = "${RPC_GOERLI}"
 
 [etherscan]
 ethereum={key="${ETHERSCAN_API_KEY_ETHEREUM}",chainId=1}
+georli={key="${ETHERSCAN_API_KEY_ETHEREUM}",chainId=5}
 optimism={key="${ETHERSCAN_API_KEY_OPTIMISM}",chainId=10}
 avalanche={key="${ETHERSCAN_API_KEY_AVALANCHE}",chainId=43114}
 polygon={key="${ETHERSCAN_API_KEY_POLYGON}",chainId=137}
