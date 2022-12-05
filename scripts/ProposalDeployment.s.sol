@@ -6,33 +6,26 @@ import {Script} from 'forge-std/Script.sol';
 import {AaveGovernanceV2, IExecutorWithTimelock} from 'aave-address-book/AaveGovernanceV2.sol';
 
 library DeployL1Proposal {
-  function _deployL1Proposal(
-    address polygonPayload,
-    address optimismPayload,
-    bytes32 ipfsHash
-  ) internal returns (uint256 proposalId) {
+  function _deployL1Proposal(address polygonPayload, bytes32 ipfsHash)
+    internal
+    returns (uint256 proposalId)
+  {
     require(polygonPayload != address(0), "ERROR: L2_PAYLOAD can't be address(0)");
-    require(optimismPayload != address(0), "ERROR: L2_PAYLOAD can't be address(0)");
     require(ipfsHash != bytes32(0), "ERROR: IPFS_HASH can't be bytes32(0)");
-    address[] memory targets = new address[](2);
+    address[] memory targets = new address[](1);
     targets[0] = AaveGovernanceV2.CROSSCHAIN_FORWARDER_POLYGON;
-    targets[1] = AaveGovernanceV2.CROSSCHAIN_FORWARDER_OPTIMISM;
 
-    uint256[] memory values = new uint256[](2);
+    uint256[] memory values = new uint256[](1);
     values[0] = 0;
-    values[1] = 0;
 
-    string[] memory signatures = new string[](2);
+    string[] memory signatures = new string[](1);
     signatures[0] = 'execute(address)';
-    signatures[1] = 'execute(address)';
 
-    bytes[] memory calldatas = new bytes[](2);
+    bytes[] memory calldatas = new bytes[](1);
     calldatas[0] = abi.encode(polygonPayload);
-    calldatas[1] = abi.encode(optimismPayload);
 
-    bool[] memory withDelegatecalls = new bool[](2);
+    bool[] memory withDelegatecalls = new bool[](1);
     withDelegatecalls[0] = true;
-    withDelegatecalls[1] = true;
 
     return
       AaveGovernanceV2.GOV.create(
@@ -53,7 +46,6 @@ contract ProposalDeployment is Script {
     vm.startBroadcast();
     DeployL1Proposal._deployL1Proposal(
       address(0), // polygonPayload
-      address(0), // optimismPayload
       bytes32(0)
     );
     vm.stopBroadcast();

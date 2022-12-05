@@ -21,8 +21,10 @@ The upgrade includes the following changes:
 
 This repository contains two scripts.
 
-1. `PayloadDeployment.sol` which contains multiple scripts which allow deploying a payload for a specific network.
-2. `ProposalDeployment.sol` which contains a deploy script that will create the onchainProposals for all the networks controlled via governance(polygon, optimism).
+1. `PayloadDeployment.sol` which contains multiple scripts which allow deploying a payload or implementation for a specific network.
+2. `ProposalDeployment.sol` which contains a deploy script that will create the onchainProposal for polygon.
+
+For generating the calldata on a specific network you can run `make emit-calldata rewardControllerImpl=newImplAddress`.
 
 ## Development
 
