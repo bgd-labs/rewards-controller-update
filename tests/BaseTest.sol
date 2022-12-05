@@ -9,69 +9,7 @@ import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitial
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
 import {MockExecutor} from './MockExecutor.sol';
 
-abstract contract BaseTest is Test {
-  UpgradeRewardsControllerPayload public payload;
-  MockExecutor internal _aclAdmin;
-  IPoolAddressesProvider internal _poolAddressProvider;
-  address internal _incentivesController;
-
-  function _setUp(
-    IPoolAddressesProvider poolAddressProvider,
-    address incentivesController,
-    address aclAdmin
-  ) internal {
-    payload = new UpgradeRewardsControllerPayload(poolAddressProvider, incentivesController);
-    MockExecutor mockExecutor = new MockExecutor();
-    vm.etch(aclAdmin, address(mockExecutor).code);
-
-    _poolAddressProvider = poolAddressProvider;
-    _incentivesController = incentivesController;
-    _aclAdmin = MockExecutor(aclAdmin);
-  }
-
-  function _execute() internal {
-    _aclAdmin.execute(address(payload));
-  }
-
-  function test_adminIsPoolAddressesProvider() public {
-    assertEq(
-      ProxyHelpers.getInitializableAdminUpgradeabilityProxyAdmin(vm, _incentivesController),
-      address(_poolAddressProvider)
-    );
-  }
-
-  function test_setAddressIsProperlySet() public {
-    assertEq(
-      _poolAddressProvider.getAddress(payload.INCENTIVES_CONTROLLER_ADDRESS_ID()),
-      payload.INCENTIVES_CONTROLLER()
-    );
-  }
-
-  function test_proposalPayloadExecution() public {
-    address emissionManagerBefore = RewardsController(_incentivesController).getEmissionManager();
-    address implBefore = ProxyHelpers.getInitializableAdminUpgradeabilityProxyImplementation(
-      vm,
-      _incentivesController
-    );
-
-    _execute();
-
-    address emissionManagerAfter = RewardsController(_incentivesController).getEmissionManager();
-    address implAfter = ProxyHelpers.getInitializableAdminUpgradeabilityProxyImplementation(
-      vm,
-      _incentivesController
-    );
-
-    // implementation should change
-    assertTrue(implBefore != implAfter, 'IMPL_UPDATE');
-    // emissionManager should stay the same
-    assertEq(emissionManagerBefore, emissionManagerAfter, 'EMISSION_MANAGER_UPDATE');
-  }
-}
-
-abstract contract BaseTestGuardian is Test {
-  RewardsController public rewardsController;
-  address internal _aclAdmin;
+abstract contract Base is Test {
   IPoolAddressesProvider internal _poolAddressProvider;
   address internal _incentivesController;
 
@@ -82,24 +20,9 @@ abstract contract BaseTestGuardian is Test {
     IPoolAddressesProvider poolAddressProvider,
     address incentivesController,
     address aclAdmin
-  ) internal {
-    address emissionManager = RewardsController(incentivesController).getEmissionManager();
-    rewardsController = new RewardsController(emissionManager);
-    rewardsController.initialize(emissionManager);
+  ) internal virtual;
 
-    _poolAddressProvider = poolAddressProvider;
-    _incentivesController = incentivesController;
-    _aclAdmin = aclAdmin;
-  }
-
-  function _execute() internal {
-    vm.startPrank(_aclAdmin);
-    _poolAddressProvider.setAddressAsProxy(
-      INCENTIVES_CONTROLLER_ADDRESS_ID,
-      address(rewardsController)
-    );
-    vm.stopPrank();
-  }
+  function _execute() internal virtual;
 
   function test_adminIsPoolAddressesProvider() public {
     assertEq(
@@ -134,5 +57,56 @@ abstract contract BaseTestGuardian is Test {
     assertTrue(implBefore != implAfter, 'IMPL_UPDATE');
     // emissionManager should stay the same
     assertEq(emissionManagerBefore, emissionManagerAfter, 'EMISSION_MANAGER_UPDATE');
+  }
+}
+
+abstract contract BaseTest is Base {
+  UpgradeRewardsControllerPayload public payload;
+  MockExecutor internal _aclAdmin;
+
+  function _setUp(
+    IPoolAddressesProvider poolAddressProvider,
+    address incentivesController,
+    address aclAdmin
+  ) internal override {
+    payload = new UpgradeRewardsControllerPayload(poolAddressProvider, incentivesController);
+    MockExecutor mockExecutor = new MockExecutor();
+    vm.etch(aclAdmin, address(mockExecutor).code);
+
+    _poolAddressProvider = poolAddressProvider;
+    _incentivesController = incentivesController;
+    _aclAdmin = MockExecutor(aclAdmin);
+  }
+
+  function _execute() internal override {
+    _aclAdmin.execute(address(payload));
+  }
+}
+
+abstract contract BaseTestGuardian is Base {
+  RewardsController public rewardsController;
+  address internal _aclAdmin;
+
+  function _setUp(
+    IPoolAddressesProvider poolAddressProvider,
+    address incentivesController,
+    address aclAdmin
+  ) internal override {
+    address emissionManager = RewardsController(incentivesController).getEmissionManager();
+    rewardsController = new RewardsController(emissionManager);
+    rewardsController.initialize(emissionManager);
+
+    _poolAddressProvider = poolAddressProvider;
+    _incentivesController = incentivesController;
+    _aclAdmin = aclAdmin;
+  }
+
+  function _execute() internal override {
+    vm.startPrank(_aclAdmin);
+    _poolAddressProvider.setAddressAsProxy(
+      INCENTIVES_CONTROLLER_ADDRESS_ID,
+      address(rewardsController)
+    );
+    vm.stopPrank();
   }
 }
