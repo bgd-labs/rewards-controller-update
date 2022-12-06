@@ -12,6 +12,7 @@ The upgrade includes the following changes:
 6. remove unnecessary `constructor` that sets state on a contract always used behind a proxy https://github.com/aave/aave-v3-periphery/pull/118
 7. consistently uppercase license pragma `agpl`->`AGPL` https://github.com/aave/aave-v3-periphery/pull/120
 8. improving documentation on various structs https://github.com/aave/aave-v3-periphery/pull/121
+9. removing constructor of RewardsDistributor and RewardsController [here](https://github.com/aave/aave-v3-periphery/pull/118/files)
 
 ## Addresses
 
