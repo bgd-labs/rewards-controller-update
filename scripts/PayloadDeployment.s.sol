@@ -10,10 +10,23 @@ import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsCo
 
 contract DeployPolygon is Script {
   function run() external {
+<<<<<<< Updated upstream
     vm.startBroadcast();
     new UpgradeRewardsControllerPayload(
       AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
       AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER
+=======
+    address emissionManager = RewardsController(AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER)
+      .getEmissionManager();
+
+    vm.startBroadcast();
+    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    rewardsControllerImpl.initialize(emissionManager);
+    new UpgradeRewardsControllerPayload(
+      AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
+      AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER,
+      rewardsControllerImpl
+>>>>>>> Stashed changes
     );
     vm.stopBroadcast();
   }

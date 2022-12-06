@@ -41,7 +41,7 @@ library DeployL1Proposal {
 }
 
 // TODO: enter correct addresses
-contract ProposalDeployment is Script {
+contract CreateProposal is Script {
   function run() external {
     vm.startBroadcast();
     DeployL1Proposal._deployL1Proposal(

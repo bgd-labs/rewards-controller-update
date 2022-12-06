@@ -6,6 +6,12 @@ import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsCon
 import {IProposalGenericExecutor} from '../interfaces/IProposalGenericExecutor.sol';
 import {IInitializableAdminUpgradeabilityProxy} from '../interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 
+/**
+ * @title UpgradeRewardsControllerPayload
+ * @author BGD Labs
+ * @notice This payload will update the RewardsController implementation on a V3 pool
+ * https://governance.aave.com/t/bgd-upgrade-of-aave-v3-periphery-to-3-0-1-across-networks/10744
+ */
 contract UpgradeRewardsControllerPayload is IProposalGenericExecutor {
   // generic constants
   bytes32 public constant INCENTIVES_CONTROLLER_ADDRESS_ID =
@@ -14,19 +20,22 @@ contract UpgradeRewardsControllerPayload is IProposalGenericExecutor {
   // network specific addresses
   IPoolAddressesProvider public immutable POOL_ADDRESS_PROVIDER;
   address public immutable INCENTIVES_CONTROLLER;
+  RewardsController public immutable REWARDS_CONTROLLER_IMPL;
 
-  constructor(IPoolAddressesProvider poolAddressesProvider, address incentivesController) {
+  constructor(
+    IPoolAddressesProvider poolAddressesProvider,
+    address incentivesController,
+    RewardsController rewardsControllerImpl
+  ) {
     INCENTIVES_CONTROLLER = incentivesController;
     POOL_ADDRESS_PROVIDER = poolAddressesProvider;
+    REWARDS_CONTROLLER_IMPL = rewardsControllerImpl;
   }
 
   function execute() external {
-    address emissionManager = RewardsController(INCENTIVES_CONTROLLER).getEmissionManager();
-    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
     POOL_ADDRESS_PROVIDER.setAddressAsProxy(
       INCENTIVES_CONTROLLER_ADDRESS_ID,
-      address(rewardsControllerImpl)
+      address(REWARDS_CONTROLLER_IMPL)
     );
   }
 }

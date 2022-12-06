@@ -62,6 +62,7 @@ abstract contract Base is Test {
 
 abstract contract BaseTest is Base {
   UpgradeRewardsControllerPayload public payload;
+  RewardsController public rewardsController;
   MockExecutor internal _aclAdmin;
 
   function _setUp(
@@ -69,7 +70,14 @@ abstract contract BaseTest is Base {
     address incentivesController,
     address aclAdmin
   ) internal override {
-    payload = new UpgradeRewardsControllerPayload(poolAddressProvider, incentivesController);
+    address emissionManager = RewardsController(incentivesController).getEmissionManager();
+    rewardsController = new RewardsController(emissionManager);
+    rewardsController.initialize(emissionManager);
+    payload = new UpgradeRewardsControllerPayload(
+      poolAddressProvider,
+      incentivesController,
+      rewardsController
+    );
     MockExecutor mockExecutor = new MockExecutor();
     vm.etch(aclAdmin, address(mockExecutor).code);
 
