@@ -16,27 +16,17 @@ git-diff :
 	@printf '%s\n%s\n%s\n' "\`\`\`diff" "$$(git diff --no-index --diff-algorithm=patience --ignore-space-at-eol ${before} ${after})" "\`\`\`" > diffs/${out}.md
 
 # Deploy payloads
-<<<<<<< Updated upstream
-deploy-goerli :;  forge script scripts/PayloadDeployment.s.sol:DeployGoerli --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-polygon :;  forge script scripts/PayloadDeployment.s.sol:DeployPolygon --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-avalanche :;  forge script scripts/PayloadDeployment.s.sol:DeployAvalanche --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-optimism :;  forge script scripts/PayloadDeployment.s.sol:DeployOptimism --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-arbitrum :;  forge script scripts/PayloadDeployment.s.sol:DeployArbitrum --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-fantom :;  forge script scripts/PayloadDeployment.s.sol:DeployFantom --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-harmony :;  forge script scripts/PayloadDeployment.s.sol:DeployHarmony --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-=======
 deploy-polygon :; forge script scripts/PayloadDeployment.s.sol:DeployPolygon --rpc-url polygon --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
-deploy-avalanche :; forge script scripts/PayloadDeployment.s.sol:DeployAvalanche --rpc-url avalanche --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-optimism :; forge script scripts/PayloadDeployment.s.sol:DeployOptimism --rpc-url optimism --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-arbitrum :; forge script scripts/PayloadDeployment.s.sol:DeployArbitrum --rpc-url arbitrum --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-fantom :; forge script scripts/PayloadDeployment.s.sol:DeployFantom --rpc-url fantom --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
-deploy-harmony :; forge script scripts/PayloadDeployment.s.sol:DeployHarmony --rpc-url harmony --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
->>>>>>> Stashed changes
+deploy-avalanche :; forge script scripts/PayloadDeployment.s.sol:DeployAvalanche --rpc-url avalanche --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
+deploy-optimism :; forge script scripts/PayloadDeployment.s.sol:DeployOptimism --rpc-url optimism --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
+deploy-arbitrum :; forge script scripts/PayloadDeployment.s.sol:DeployArbitrum --rpc-url arbitrum --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
+deploy-fantom :; forge script scripts/PayloadDeployment.s.sol:DeployFantom --rpc-url fantom --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
+deploy-harmony :; forge script scripts/PayloadDeployment.s.sol:DeployHarmony --rpc-url harmony --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
 
-emit-calldata :; forge script scripts/PayloadDeployment.s.sol:EmitCalldata --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv --sig "run(address)" -- ${rewardControllerImpl}
+emit-calldata :; forge script scripts/PayloadDeployment.s.sol:EmitCalldata -vvvv --sig "run(address)" -- ${rewardControllerImpl}
 
 # Deploy proposal
-create-proposal :; forge script scripts/CreateProposal.s.sol:CreateProposal --rpc-url ${RPC_URL} --broadcast --legacy --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify --etherscan-api-key ${ETHERSCAN_API_KEY} -vvvv
+create-proposal :; forge script scripts/CreateProposal.s.sol:CreateProposal --rpc-url ethereum --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
 
 diff:
 	@echo "downloading source from etherscan"
@@ -52,4 +42,3 @@ diff-all:
 	@make diff chain=arbitrum address=0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789
 	@make diff chain=fantom address=0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789
 	rm ./src/Flattened.sol
-

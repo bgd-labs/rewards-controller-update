@@ -8,25 +8,24 @@ import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsCon
 import {IPoolAddressesProvider} from 'aave-address-book/AaveV3.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
 
+library Create2Salt {
+  bytes32 constant salt = keccak256(bytes('aave.rewardsController.v2'));
+}
+
 contract DeployPolygon is Script {
   function run() external {
-<<<<<<< Updated upstream
-    vm.startBroadcast();
-    new UpgradeRewardsControllerPayload(
-      AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
-      AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER
-=======
     address emissionManager = RewardsController(AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER)
       .getEmissionManager();
 
     vm.startBroadcast();
-    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
+      emissionManager
+    );
     rewardsControllerImpl.initialize(emissionManager);
     new UpgradeRewardsControllerPayload(
       AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
       AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER,
       rewardsControllerImpl
->>>>>>> Stashed changes
     );
     vm.stopBroadcast();
   }
@@ -38,7 +37,9 @@ contract DeployAvalanche is Script {
       .getEmissionManager();
 
     vm.startBroadcast();
-    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
+      emissionManager
+    );
     rewardsControllerImpl.initialize(emissionManager);
     vm.stopBroadcast();
   }
@@ -50,8 +51,10 @@ contract DeployOptimism is Script {
       .getEmissionManager();
 
     vm.startBroadcast();
-    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
+      emissionManager
+    );
+    RewardsController(rewardsControllerImpl).initialize(emissionManager);
     vm.stopBroadcast();
   }
 }
@@ -62,7 +65,9 @@ contract DeployArbitrum is Script {
       .getEmissionManager();
 
     vm.startBroadcast();
-    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
+      emissionManager
+    );
     rewardsControllerImpl.initialize(emissionManager);
     vm.stopBroadcast();
   }
@@ -74,7 +79,9 @@ contract DeployFantom is Script {
       .getEmissionManager();
 
     vm.startBroadcast();
-    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
+      emissionManager
+    );
     rewardsControllerImpl.initialize(emissionManager);
     vm.stopBroadcast();
   }

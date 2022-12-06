@@ -15,7 +15,13 @@ The upgrade includes the following changes:
 
 ## Addresses
 
-- TBA
+- [Polygon:RewardsController](https://polygonscan.com/address/0x723a9d120ed2cd90ac550d779375f6178bfd86e3#code)
+- [Polygon:UpgradeRewardsControllerPayload](https://polygonscan.com/address/0x6f02253c80A041a773efa35c98D4bc14A0f6EF9e)
+- [Avalanche:RewardsController](https://snowtrace.io/address/0x723A9d120Ed2CD90AC550d779375F6178BFD86E3#code)
+- [Optimism:RewardsController](https://optimistic.etherscan.io/address/0x723A9d120Ed2CD90AC550d779375F6178BFD86E3#code)
+- [Arbitrum:RewardsController](https://arbiscan.io/address/0x723a9d120ed2cd90ac550d779375f6178bfd86e3#code)
+- [Fantom:RewardsController](https://ftmscan.com/address/0x723a9d120ed2cd90ac550d779375f6178bfd86e3#code)
+- [Harmony:RewardsController](https://explorer.harmony.one/address/0x5f5c02875a8e9b5a26fbd09040abcfdeb2aa6711?activeTab=7) harmony has a different address as it not supported on the `create2` factory that we rely on as it's enforcing EIP-155, also verification does not work properly
 
 ## Deployment
 

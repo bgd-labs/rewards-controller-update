@@ -44,10 +44,7 @@ library DeployL1Proposal {
 contract CreateProposal is Script {
   function run() external {
     vm.startBroadcast();
-    DeployL1Proposal._deployL1Proposal(
-      address(0), // polygonPayload
-      bytes32(0)
-    );
+    DeployL1Proposal._deployL1Proposal(0x6f02253c80A041a773efa35c98D4bc14A0f6EF9e, bytes32(0));
     vm.stopBroadcast();
   }
 }
