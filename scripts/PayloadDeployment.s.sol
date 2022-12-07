@@ -21,10 +21,9 @@ contract DeployPolygon is Script {
     RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
       emissionManager
     );
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     new UpgradeRewardsControllerPayload(
       AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
-      AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER,
       rewardsControllerImpl
     );
     vm.stopBroadcast();
@@ -40,7 +39,7 @@ contract DeployAvalanche is Script {
     RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
       emissionManager
     );
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -54,7 +53,7 @@ contract DeployOptimism is Script {
     RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
       emissionManager
     );
-    RewardsController(rewardsControllerImpl).initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -68,7 +67,7 @@ contract DeployArbitrum is Script {
     RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
       emissionManager
     );
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -82,7 +81,7 @@ contract DeployFantom is Script {
     RewardsController rewardsControllerImpl = new RewardsController{salt: Create2Salt.salt}(
       emissionManager
     );
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -94,7 +93,7 @@ contract DeployHarmony is Script {
 
     vm.startBroadcast();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }

@@ -19,15 +19,10 @@ contract UpgradeRewardsControllerPayload is IProposalGenericExecutor {
 
   // network specific addresses
   IPoolAddressesProvider public immutable POOL_ADDRESS_PROVIDER;
-  address public immutable INCENTIVES_CONTROLLER;
   RewardsController public immutable REWARDS_CONTROLLER_IMPL;
 
-  constructor(
-    IPoolAddressesProvider poolAddressesProvider,
-    address incentivesController,
-    RewardsController rewardsControllerImpl
-  ) {
-    INCENTIVES_CONTROLLER = incentivesController;
+  constructor(IPoolAddressesProvider poolAddressesProvider, RewardsController rewardsControllerImpl)
+  {
     POOL_ADDRESS_PROVIDER = poolAddressesProvider;
     REWARDS_CONTROLLER_IMPL = rewardsControllerImpl;
   }

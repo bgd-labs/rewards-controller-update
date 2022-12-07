@@ -1,6 +1,6 @@
 ```diff
 diff --git a/./src/etherscan/polygon_0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789/Flattened.sol b/./src/Flattened.sol
-index 8f2b1a5..838877f 100644
+index 8f2b1a5..afafb3c 100644
 --- a/./src/etherscan/polygon_0xaad324f7e4Dd50C6b105820f8a877eE2DCBFA789/Flattened.sol
 +++ b/./src/Flattened.sol
 @@ -1,5 +1,5 @@
@@ -222,7 +222,7 @@ index 8f2b1a5..838877f 100644
    }
  }
  
-@@ -1403,10 +1423,10 @@ interface IRewardsController is IRewardsDistributor {
+@@ -1403,15 +1423,16 @@ interface IRewardsController is IRewardsDistributor {
    function configureAssets(RewardsDataTypes.RewardsConfigInput[] memory config) external;
  
    /**
@@ -231,13 +231,21 @@ index 8f2b1a5..838877f 100644
 -   * @param userBalance The user balance of the asset
 -   * @param totalSupply The total supply of the asset
 +   * @dev Called by the corresponding asset on transfer hook in order to update the rewards distribution.
-+   * @param user The address of the user whose asset balance has changed 
-+   * @param userBalance The previous user balance prior to balance change 
++   * @dev The units of `totalSupply` and `userBalance` should be the same.
++   * @param user The address of the user whose asset balance has changed
 +   * @param totalSupply The total supply of the asset prior to user balance change
++   * @param userBalance The previous user balance prior to balance change
     **/
    function handleAction(
      address user,
-@@ -1505,7 +1525,7 @@ interface IRewardsController is IRewardsDistributor {
+-    uint256 userBalance,
+-    uint256 totalSupply
++    uint256 totalSupply,
++    uint256 userBalance
+   ) external;
+ 
+   /**
+@@ -1505,7 +1526,7 @@ interface IRewardsController is IRewardsDistributor {
  contract RewardsController is RewardsDistributor, VersionedInitializable, IRewardsController {
    using SafeCast for uint256;
  
@@ -246,7 +254,7 @@ index 8f2b1a5..838877f 100644
  
    // This mapping allows whitelisted addresses to claim on behalf of others
    // useful for contracts that hold tokens to be rewarded but don't have any native logic to claim Liquidity Mining rewards
-@@ -1532,11 +1552,9 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
+@@ -1532,11 +1553,9 @@ contract RewardsController is RewardsDistributor, VersionedInitializable, IRewar
  
    /**
     * @dev Initialize for RewardsController

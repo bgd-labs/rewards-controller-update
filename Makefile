@@ -26,7 +26,7 @@ deploy-harmony :; forge script scripts/PayloadDeployment.s.sol:DeployHarmony --r
 emit-calldata :; forge script scripts/PayloadDeployment.s.sol:EmitCalldata -vvvv --sig "run(address)" -- ${rewardControllerImpl}
 
 # Deploy proposal
-create-proposal :; forge script scripts/CreateProposal.s.sol:CreateProposal --rpc-url ethereum --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
+create-proposal :; forge script scripts/CreateProposal.s.sol:CreateProposal --rpc-url mainnet --broadcast --ledger --mnemonic-indexes ${MNEMONIC_INDEX} --sender ${LEDGER_SENDER} --verify -vvvv
 
 diff:
 	@echo "downloading source from etherscan"
