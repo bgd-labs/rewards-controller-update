@@ -41,13 +41,10 @@ library DeployL1Proposal {
 }
 
 // TODO: enter correct addresses
-contract ProposalDeployment is Script {
+contract CreateProposal is Script {
   function run() external {
     vm.startBroadcast();
-    DeployL1Proposal._deployL1Proposal(
-      address(0), // polygonPayload
-      bytes32(0)
-    );
+    DeployL1Proposal._deployL1Proposal(0xf50a080aC535e531EC33cC05b227E910De2fb1fA, bytes32(0));
     vm.stopBroadcast();
   }
 }

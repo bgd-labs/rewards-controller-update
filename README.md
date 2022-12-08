@@ -16,7 +16,13 @@ The upgrade includes the following changes:
 
 ## Addresses
 
-- TBA
+- [Polygon:RewardsController](https://polygonscan.com/address/0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731#code)
+- [Polygon:UpgradeRewardsControllerPayload](https://polygonscan.com/address/0xf50a080aC535e531EC33cC05b227E910De2fb1fA)
+- [Avalanche:RewardsController](https://snowtrace.io/address/0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731#code)
+- [Optimism:RewardsController](https://optimistic.etherscan.io/address/0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731#code)
+- [Arbitrum:RewardsController](https://arbiscan.io/address/0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731#code)
+- [Fantom:RewardsController](https://ftmscan.com/address/0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731#code) verification does not work properly
+- [Harmony:RewardsController](https://explorer.harmony.one/address/0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731?activeTab=7) verification does not work properly
 
 ## Deployment
 

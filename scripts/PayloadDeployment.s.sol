@@ -10,10 +10,15 @@ import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsCo
 
 contract DeployPolygon is Script {
   function run() external {
+    address emissionManager = RewardsController(AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER)
+      .getEmissionManager();
+
     vm.startBroadcast();
+    RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     new UpgradeRewardsControllerPayload(
       AaveV3Polygon.POOL_ADDRESSES_PROVIDER,
-      AaveV3Polygon.DEFAULT_INCENTIVES_CONTROLLER
+      rewardsControllerImpl
     );
     vm.stopBroadcast();
   }
@@ -26,7 +31,7 @@ contract DeployAvalanche is Script {
 
     vm.startBroadcast();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -38,7 +43,7 @@ contract DeployOptimism is Script {
 
     vm.startBroadcast();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -50,7 +55,7 @@ contract DeployArbitrum is Script {
 
     vm.startBroadcast();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -62,7 +67,7 @@ contract DeployFantom is Script {
 
     vm.startBroadcast();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
@@ -74,7 +79,7 @@ contract DeployHarmony is Script {
 
     vm.startBroadcast();
     RewardsController rewardsControllerImpl = new RewardsController(emissionManager);
-    rewardsControllerImpl.initialize(emissionManager);
+    rewardsControllerImpl.initialize(address(0));
     vm.stopBroadcast();
   }
 }
