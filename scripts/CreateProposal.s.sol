@@ -44,7 +44,7 @@ library DeployL1Proposal {
 contract CreateProposal is Script {
   function run() external {
     vm.startBroadcast();
-    DeployL1Proposal._deployL1Proposal(0x6f02253c80A041a773efa35c98D4bc14A0f6EF9e, bytes32(0));
+    DeployL1Proposal._deployL1Proposal(0xf50a080aC535e531EC33cC05b227E910De2fb1fA, bytes32(0));
     vm.stopBroadcast();
   }
 }
