@@ -31,7 +31,7 @@ This repository contains two scripts.
 1. `PayloadDeployment.sol` which contains multiple scripts which allow deploying a payload or implementation for a specific network.
 2. `ProposalDeployment.sol` which contains a deploy script that will create the onchainProposal for polygon.
 
-For generating the calldata on a specific network you can run `make emit-calldata rewardControllerImpl=newImplAddress`.
+For generating the calldata on a specific network you can run `make emit-calldata rewardControllerImpl=newImplAddress` which will yield `0x5dcc528c703c2c8634bed68d98c029c18f310e7f7ec0e5d6342c590190b3cb8b3ba545320000000000000000000000005f4d15d761528c57a5c30c43c1dab26fc5452731`for the impl `0x5f4d15d761528c57a5C30c43c1DAb26Fc5452731`.
 
 ## Development
 

@@ -8,6 +8,7 @@ import {RewardsController} from '@aave/periphery-v3/contracts/rewards/RewardsCon
 import {IInitializableAdminUpgradeabilityProxy} from '../src/interfaces/IInitializableAdminUpgradeabilityProxy.sol';
 import {UpgradeRewardsControllerPayload} from '../src/contracts/UpgradeRewardsControllerPayload.sol';
 import {MockExecutor} from './MockExecutor.sol';
+import {EmitCalldata} from '../scripts/PayloadDeployment.s.sol';
 
 abstract contract Base is Test {
   IPoolAddressesProvider internal _poolAddressProvider;
@@ -90,6 +91,7 @@ abstract contract BaseTest is Base {
 abstract contract BaseTestGuardian is Base {
   RewardsController public rewardsController;
   address internal _aclAdmin;
+  bytes internal emittedCallData;
 
   function _setUp(
     IPoolAddressesProvider poolAddressProvider,
@@ -103,14 +105,14 @@ abstract contract BaseTestGuardian is Base {
     _poolAddressProvider = poolAddressProvider;
     _incentivesController = incentivesController;
     _aclAdmin = aclAdmin;
+
+    EmitCalldata emitter = new EmitCalldata();
+    emittedCallData = emitter.run(address(rewardsController));
   }
 
   function _execute() internal override {
     vm.startPrank(_aclAdmin);
-    _poolAddressProvider.setAddressAsProxy(
-      INCENTIVES_CONTROLLER_ADDRESS_ID,
-      address(rewardsController)
-    );
+    address(_poolAddressProvider).call(emittedCallData);
     vm.stopPrank();
   }
 }
