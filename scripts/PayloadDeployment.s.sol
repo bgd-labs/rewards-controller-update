@@ -85,11 +85,16 @@ contract DeployHarmony is Script {
 }
 
 contract EmitCalldata is Script, Test {
-  function run(address rewardsControllerImpl) external {
+  bytes32 public constant INCENTIVES_CONTROLLER_ADDRESS_ID =
+    0x703c2c8634bed68d98c029c18f310e7f7ec0e5d6342c590190b3cb8b3ba54532;
+
+  function run(address rewardsControllerImpl) external returns (bytes memory) {
     bytes memory callData = abi.encodeWithSelector(
       IPoolAddressesProvider.setAddressAsProxy.selector,
+      INCENTIVES_CONTROLLER_ADDRESS_ID,
       rewardsControllerImpl
     );
     emit log_bytes(callData);
+    return callData;
   }
 }
